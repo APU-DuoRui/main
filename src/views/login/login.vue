@@ -79,7 +79,7 @@
     <!-- 第一步 注册应该标签(使用子组件的步骤) -->
     <!-- 调用 子组件的弹框出来 -->
     <!-- 通过绑定 ref可以操作DOM -->
-    <register ref="onsubmit"></register>
+    <register ref="register"></register>
   </div>
 </template>
 
@@ -146,51 +146,51 @@ export default {
           },
         ],
       },
-      // (3).注册一个子(组件)传父(组件)事件  第三步(使用子组件的步骤)
-      canceEvent() {
-        // 父组件 调用 子组件
-        this.$refs.onsubmit.isShow = true;
-      },
     };
   },
+  // (4)统一管理方法
   methods: {
-    // 点击触发axios网络请求
+    // 1.点击触发axios网络请求
     yim() {
-      // 修改img的src的路径的图片
+      // 2.修改img的src的路径的图片
       this.yimimg =
         "http://127.0.0.1/heimamm/public/captcha?type=login&wsdgsdg=" +
         Date.now();
     },
-    // 跳转到主页面
+    // (4.1)跳转到主页面
     registe() {
+      // 1.使用路由跳转在另一个组件
       this.$refs.form.validate((valid) => {
         if (valid) {
-          // 如果判断成功则走这个
+          // 2.如果判断成功则走这个
+          // 使用了ElementUI的提示框
           this.$message({
             showClose: true,
             message: "恭喜你登录成功",
             type: "success",
           });
-
-          /* this.$router.push("/headlist"); */
+          // 2.1现在还没做服务器匹配的账号和密码/验证码 (现在简单的做一个页面跳转主页(组件)事件)
+          this.$router.push("/headlist");
         } else {
+          // 3.失败就走这个条件
+          // 使用了ElementUI的提示框
           this.$message({
             showClose: true,
             message: "登录失败",
             type: "error",
           });
+          // 3.1抛出处理好的数据 然后停止执行
           return false;
         }
       });
     },
-    register() {
-      this.$refs.form.resetFields();
+    // (4.2).注册一个子(组件)传父(组件)事件  第三步(使用子组件的步骤)
+    // 父组件 拿子组件 -事件
+    canceEvent() {
+      // 父组件 调用 子组件
+      this.$refs.register.isShow = true;
     },
   },
-  // onSubmit() {
-  //   console.log("submit!");
-  // },
-  /*  }, */
 };
 </script>
 
