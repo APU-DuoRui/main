@@ -54,9 +54,7 @@
                     <!-- `checked` 为 true 或 false -->
                     <!-- 这里是一个连接可以跳转页面 -->
                     <span>
-                      我已阅读并同意
-                      <a href="#" style="color:#00aeff">用户协议</a>和
-                      <a href="#" style="color:#00aeff">隐私条款</a>
+                      我已阅读并同意<a href="#" style="color:#00aeff">用户协议</a>和<a href="#" style="color:#00aeff">隐私条款</a>
                     </span>
                   </el-checkbox>
                 </span>
