@@ -1,0 +1,245 @@
+<template>
+  <div class="btn1">
+    <el-row :gutter="1">
+      <el-col :span="7" :offset="4">
+        <div class="grid-content bg-purple btn-margin">
+          <div class="btn2">
+            <img class="login" src="@/assets/img/logn02.png" alt />
+            <span class="font">登录页面</span>
+            <span class="frame"></span>
+            <span class="font">用户登录</span>
+            <el-form ref="form" :model="form" label-width="80px" :rules="loginForm" class="btn3">
+              <!-- 输入手机 -->
+              <el-form-item prop="account">
+                <el-input
+                  prefix-icon="el-icon-s-custom"
+                  class="btn4"
+                  v-model="form.account"
+                  placeholder="请输入手机号码"
+                ></el-input>
+              </el-form-item>
+              <!-- 密码框 -->
+              <el-form-item prop="password">
+                <el-input
+                  prefix-icon="el-icon-unlock"
+                  class="btn4"
+                  v-model="form.password"
+                  placeholder="请输入密码"
+                  type="password"
+                ></el-input>
+              </el-form-item>
+              <!-- 验证码 -->
+              <el-form-item prop="auth">
+                <el-row :gutter="20">
+                  <el-col :span="16">
+                    <!-- 输入框 -->
+                    <el-input
+                      prefix-icon="el-icon-chat-dot-round"
+                      class="btn5"
+                      v-model="form.auth"
+                      placeholder="请输入验证码"
+                    ></el-input>
+                  </el-col>
+                  <!-- 验证码图片 -->
+                  <el-col :span="8">
+                    <!-- bol是一进页面就默认 发送axios 如果用户点击当前的图片要切换验证码的图片 修改src路径 -->
+                    <img class="yjm" v-if="bol" @click="yim" :src="yimimg" alt />
+                  </el-col>
+                </el-row>
+              </el-form-item>
+              <!-- 复选框 -->
+              <el-form-item prop="checked">
+                <span class="typeface">
+                  <el-checkbox v-model="form.checked" class="protocol">
+                    <!-- `checked` 为 true 或 false -->
+                    <!-- 这里是一个连接可以跳转页面 -->
+                    <span>
+                      我已阅读并同意
+                      <a href="#" style="color:#00aeff">用户协议</a>和
+                      <a href="#" style="color:#00aeff">隐私条款</a>
+                    </span>
+                  </el-checkbox>
+                </span>
+              </el-form-item>
+              <!-- 登录按钮/注册按钮 -->
+              <el-form-item>
+                <el-button class="box1" type="primary" @click="registe">登录</el-button>
+                <br />
+                <el-button class="box1" type="primary" @click="canceEvent">立即创建</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </el-col>
+      <!-- 背景图片 -->
+      <el-col :span="6" :offset="4">
+        <div class="grid-contente btn-margin"></div>
+      </el-col>
+    </el-row>
+    <!-- 第一步 注册应该标签(使用子组件的步骤) -->
+    <!-- 调用 子组件的弹框出来 -->
+    <!-- 通过绑定 ref可以操作DOM -->
+    <register ref="onsubmit"></register>
+  </div>
+</template>
+
+<script>
+// 第二步 (使用子组件的步骤)
+// 将子组件导入到当前的父组件
+import register from "@/views/login/register.vue";
+export default {
+  // 挂载到vue中
+  components: {
+    register,
+  },
+  data() {
+    return {
+      // 1.从进页面就默认发送axios网络请求 --验证切换图片
+      bol: true,
+      // 1.1设置当前网络请求的地址
+      yimimg: "http://127.0.0.1/heimamm/public/captcha?type=login",
+      // 但是需要的注册事件(显示警告/通过验证)
+      // (1). Element form表单里面有非口判断
+      form: {
+        // 1.用户号码
+        // account: "180000000000",
+        account: "",
+        // 2.用户密码
+        // password: "123456",
+        password: "",
+        // 3.验证码
+        auth: "",
+        // 4.点击同意
+        checked: "",
+      },
+      // (2). 注册事件(Element)
+      loginForm: {
+        // 判断当前用户号码是否合法
+        account: [
+          { required: true, message: "输入合法的号码", trigger: "blur" },
+          { min: 11, max: 11, message: "长度在11个字符串", trigger: "blur" },
+        ],
+        // 判断当前的密码是否正确
+        password: [
+          { required: true, message: "请重新输入密码", trigger: "blur" },
+          { min: 6, max: 12, message: "长度在6到12个字符串", trigger: "blur" },
+        ],
+        // 判断当前的验证码是否正确
+        auth: [
+          { required: true, message: "请重新输入验证码" },
+          { min: 3, max: 10, message: "长度在6到15个字符串", trigger: "blur" },
+        ],
+        // 判断有没有勾选当前的复选框
+        checked: [
+          { required: true, message: "请勾选协议" },
+          {
+            validator: (rule, value, callback) => {
+              // 判断当前有没有勾选协议
+              if (value == true) {
+                // 成功就走这个条件
+                callback();
+              } else {
+                // 失败就走这个条件
+                callback(new Error("请勾选协议"));
+              }
+            },
+          },
+        ],
+      },
+      // (3).注册一个子(组件)传父(组件)事件  第三步(使用子组件的步骤)
+      canceEvent() {
+        // 父组件 调用 子组件
+        this.$refs.onsubmit.isShow = true;
+      },
+    };
+  },
+  methods: {
+    // 点击触发axios网络请求
+    yim() {
+      // 修改img的src的路径的图片
+      this.yimimg =
+        "http://127.0.0.1/heimamm/public/captcha?type=login&wsdgsdg=" +
+        Date.now();
+    },
+    // 跳转到主页面
+    registe() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          // 如果判断成功则走这个
+          this.$message({
+            showClose: true,
+            message: "恭喜你登录成功",
+            type: "success",
+          });
+
+          /* this.$router.push("/headlist"); */
+        } else {
+          this.$message({
+            showClose: true,
+            message: "登录失败",
+            type: "error",
+          });
+          return false;
+        }
+      });
+    },
+    register() {
+      this.$refs.form.resetFields();
+    },
+  },
+  // onSubmit() {
+  //   console.log("submit!");
+  // },
+  /*  }, */
+};
+</script>
+
+<style lang='less'>
+@import "~@/assets/css/login.css";
+.btn2 {
+  height: 20px;
+  padding-top: 45px;
+  .login {
+    width: 30px;
+    height: 25px;
+    margin: -4px 20px;
+    padding-left: 35px;
+  }
+  .font,
+  .frame {
+    font-weight: 600;
+    font-size: 24px;
+    margin-right: 13px;
+  }
+  .frame {
+    width: 2px;
+    border-left: 2px #e4e5e0 solid;
+  }
+  .btn3 {
+    margin-top: 25px;
+    .btn4,
+    .btn5 {
+      margin-left: -30px;
+      width: 90%;
+    }
+    .yjm {
+      width: 110px;
+      height: 40px;
+      margin-left: -70px;
+      margin-top: 2px;
+    }
+  }
+}
+.protocol {
+  margin-left: -28px;
+  .typeface {
+    display: flex;
+    font-size: 14px;
+    line-height: 10px;
+  }
+}
+.box1 {
+  width: 100%;
+  margin: 5px 0 5px -40px !important;
+}
+</style>
