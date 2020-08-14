@@ -287,22 +287,23 @@ export default {
           sum++;
         }
       });
-      // 6.1这里是防止用户点击过多
-      // 防止出现bug 就--
-      this.toTime--;
-      // 6.2声明一个变量 因为 开了一个定时器 等定时器走完就后要停止定时器
-      let Time = setInterval(() => {
-        // 6.3 开始倒数
-        this.toTime--;
-        // 6.4判断当前的定时器是否走完 如果走完了就停止定时器
-        if (this.toTime <= -1) {
-          // 6.5停止定时器
-          clearInterval(Time);
-          this.toTime = 5;
-        }
-      }, 1000);
       // (1)判断当前有没有输入图形验证码
       if (sum == 2) {
+        // 1这里是防止用户点击过多
+        // 防止出现bug 就--
+        this.toTime--;
+        // 2声明一个变量 因为 开了一个定时器 等定时器走完就后要停止定时器
+        let Time = setInterval(() => {
+          // 3 开始倒数
+          this.toTime--;
+          // 4判断当前的定时器是否走完 如果走完了就停止定时器
+          if (this.toTime ==0) {
+            // 5停止定时器
+            clearInterval(Time);
+            this.toTime = 5;
+          }
+        }, 1000);
+
         /*  // 1.发送axios 网络请求
         this.$http({
           // 2.请求的地址 url
@@ -325,7 +326,7 @@ export default {
           .then((res) => {
             // 6.返回的数据
             // 7.提示用户返回  验证码超成功发送到用户
-            this.$message.success(res.data.data.captcha + "");
+            this.$message.success(res.data.data.captcha + ' ');
             window.console.log(res);
           })
           // 8.抛出异常
@@ -334,7 +335,7 @@ export default {
           });
       } else {
         // 提示用户 要用户接收验证码
-        this.$message.error("验证码");
+        this.$message.error("验证码无效，请重新输入验证码");
       }
     },
   },
