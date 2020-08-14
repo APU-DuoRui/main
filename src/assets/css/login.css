@@ -1,6 +1,7 @@
 .btn1 {
   min-width: 1400px;
-  min-height: 666px;
+  min-height: 720px;
+ /*  min-height: 666px; */
   /* to right设置渐变从左到右，相当于90deg */
  /*  background: linear-gradient(to right, #109dfa, #0bacfa, #05bafa); */
   background: linear-gradient( #109dfa, #0bacfa, #05bafa);

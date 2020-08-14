@@ -12,7 +12,10 @@ import '@/assets/css/public.css'
 // 3.2使用axios
 import axios from 'axios'
 // 3.3将axios变成全局的
-Vue.prototype.$http = axios.defaults.baseURL = 'http://127.0.0.1/heimamm/public'
+// Vue.prototype.$http = axios.defaults.baseURL = 'http://127.0.0.1/heimamm/public'
+Vue.prototype.$http = axios.create({
+  baseURL: process.env.VUE_APP_URL
+})
 // 4.导入自己写好的路由
 import router from '@/router/index.js'
 // 使用ElementUI框架

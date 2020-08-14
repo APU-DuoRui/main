@@ -26,6 +26,7 @@
                   v-model="form.password"
                   placeholder="请输入密码"
                   type="password"
+                  show-password
                 ></el-input>
               </el-form-item>
               <!-- 验证码 -->
@@ -54,7 +55,9 @@
                     <!-- `checked` 为 true 或 false -->
                     <!-- 这里是一个连接可以跳转页面 -->
                     <span>
-                      我已阅读并同意<a href="#" style="color:#00aeff">用户协议</a>和<a href="#" style="color:#00aeff">隐私条款</a>
+                      我已阅读并同意
+                      <a href="#" style="color:#00aeff">用户协议</a>和
+                      <a href="#" style="color:#00aeff">隐私条款</a>
                     </span>
                   </el-checkbox>
                 </span>
@@ -77,7 +80,10 @@
     <!-- 第一步 注册应该标签(使用子组件的步骤) -->
     <!-- 调用 子组件的弹框出来 -->
     <!-- 通过绑定 ref可以操作DOM -->
+    <!-- 父传子：1：在子组件标签上定义一个ref  ref=值  -->
+    <!-- 2：通过ref拿到该子组件的this===this.$refs.ref值 -->
     <register ref="register"></register>
+    <!--这个可以让表单重置(resetFields)   this.$refs.ref值.resetFields() -->
   </div>
 </template>
 
@@ -130,6 +136,7 @@ export default {
         // 判断有没有勾选当前的复选框
         checked: [
           { required: true, message: "请勾选协议" },
+          // 全局验证：调用el-form表单组件methods里面的一个validate方法
           {
             validator: (rule, value, callback) => {
               // 判断当前有没有勾选协议
