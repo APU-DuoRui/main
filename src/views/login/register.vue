@@ -56,7 +56,13 @@
         <el-form-item prop="password" label="密码">
           <el-row :gutter="24">
             <el-col :span="22">
-              <el-input prefix-icon="el-icon-unlock" show-password  type="password" v-model="form.password" autocomplete="off"></el-input>
+              <el-input
+                prefix-icon="el-icon-unlock"
+                show-password
+                type="password"
+                v-model="form.password"
+                autocomplete="off"
+              ></el-input>
             </el-col>
           </el-row>
         </el-form-item>
@@ -110,6 +116,8 @@
 </template>
 
 <script>
+// 第二步 导入对应的API替换在本页面发送axios网络
+import { getPhoneColdeApi } from "@/app/register.js";
 export default {
   // 在上传头像 可以注册一个监听事件
   watch: {
@@ -295,7 +303,7 @@ export default {
       }, 1000);
       // (1)判断当前有没有输入图形验证码
       if (sum == 2) {
-        // 1.发送axios 网络请求
+        /*  // 1.发送axios 网络请求
         this.$http({
           // 2.请求的地址 url
           url: "/sendsms",
@@ -308,6 +316,11 @@ export default {
             phone: this.form.account,
             code: this.form.auth,
           },
+        }) */
+        // 第三步调用对应的 封装好的 axios网络请求(使用api)
+        getPhoneColdeApi({
+          phone: this.form.account,
+          code: this.form.auth,
         })
           .then((res) => {
             // 6.返回的数据
