@@ -10,11 +10,11 @@
             <span class="font">用户登录</span>
             <el-form ref="form" :model="form" label-width="80px" :rules="loginForm" class="btn3">
               <!-- 输入手机 -->
-              <el-form-item prop="account">
+              <el-form-item prop="phone">
                 <el-input
                   prefix-icon="el-icon-s-custom"
                   class="btn4"
-                  v-model="form.account"
+                  v-model="form.phone"
                   placeholder="请输入手机号码"
                 ></el-input>
               </el-form-item>
@@ -30,14 +30,14 @@
                 ></el-input>
               </el-form-item>
               <!-- 验证码 -->
-              <el-form-item prop="auth">
+              <el-form-item prop="code">
                 <el-row :gutter="20">
                   <el-col :span="16">
                     <!-- 输入框 -->
                     <el-input
                       prefix-icon="el-icon-chat-dot-round"
                       class="btn5"
-                      v-model="form.auth"
+                      v-model="form.code"
                       placeholder="请输入验证码"
                     ></el-input>
                   </el-col>
@@ -91,6 +91,7 @@
 // 第二步 (使用子组件的步骤)
 // 将子组件导入到当前的父组件
 import register from "@/views/login/register.vue";
+import { getregister } from "@/app/register.js";
 export default {
   // 挂载到vue中
   components: {
@@ -100,28 +101,40 @@ export default {
     return {
       // 1.从进页面就默认发送axios网络请求 --验证切换图片
       bol: true,
-      // 1.1设置当前网络请求的地址
+      // 1.1设置当前(验证码)网络请求的地址
       yimimg: "http://127.0.0.1/heimamm/public/captcha?type=login",
       // 但是需要的注册事件(显示警告/通过验证)
       // (1). Element form表单里面有非口判断
       form: {
         // 1.用户号码
-        // account: "180000000000",
-        account: "",
+        // phone: "18520409113",
+        phone: "",
         // 2.用户密码
         // password: "123456",
         password: "",
         // 3.验证码
-        auth: "",
+        code: "",
         // 4.点击同意
         checked: "",
       },
       // (2). 注册事件(Element)
       loginForm: {
         // 判断当前用户号码是否合法
-        account: [
+        phone: [
           { required: true, message: "输入合法的号码", trigger: "blur" },
-          { min: 11, max: 11, message: "长度在11个字符串", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              let _rege = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+              if (_rege.test(value)) {
+                // 如果正确的手机号码 的格式就会走这个条件
+                callback();
+              } else {
+                // 用户输入错误的手机号码 就提示用户 重新输入手机号码
+                callback(new Error("请确认输入手机号码"));
+              }
+            },
+            trigger: "change",
+          },
         ],
         // 判断当前的密码是否正确
         password: [
@@ -129,7 +142,7 @@ export default {
           { min: 6, max: 12, message: "长度在6到12个字符串", trigger: "blur" },
         ],
         // 判断当前的验证码是否正确
-        auth: [
+        code: [
           { required: true, message: "请重新输入验证码" },
           { min: 3, max: 10, message: "长度在6到15个字符串", trigger: "blur" },
         ],
@@ -168,14 +181,16 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) {
           // 2.如果判断成功则走这个
-          // 使用了ElementUI的提示框
-          this.$message({
-            showClose: true,
-            message: "恭喜你登录成功",
-            type: "success",
+          // 2.1调用封装好的api
+          getregister(this.form).then((res) => {
+            // 使用了ElementUI的提示框
+            console.log(res);
+            this.$message.success("恭喜你登录成功");
+            // 2.1做服务器匹配的账号和密码/验证码
+            this.$router.push("/headlist");
+            // 2.2将当前的token存储到本地存储
+            localStorage.setItem("token");
           });
-          // 2.1现在还没做服务器匹配的账号和密码/验证码 (现在简单的做一个页面跳转主页(组件)事件)
-          this.$router.push("/headlist");
         } else {
           // 3.失败就走这个条件
           // 使用了ElementUI的提示框
