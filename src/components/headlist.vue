@@ -14,7 +14,7 @@
           <img src="~@/assets/img/tx.png" alt />
         </div>
         <span>李达,您好!!</span>
-        <button>退出</button>
+        <button @click="logOut">退出</button>
       </div>
     </div>
     <!--  -->
@@ -30,6 +30,8 @@
 <script>
 // 导入封装好的token (将获取token时分离，就成为一个组件)
 import { getLogin } from "@/app/token.js";
+// 导入删除 token
+import { getremove } from "@/app/token.js";
 export default {
   // 判断当前的token是不是在存到本地 如果想要页面不跳转 就可以条件一个 creatd
   created() {
@@ -37,7 +39,7 @@ export default {
     window.console.log("获取token:", getLogin("token"));
     // 判断有没有的页面有没有token 如果有则 跳转(headlist)组件  如果没有则跳转到登录页面(组件)
     if (getLogin("token")) {
-      this.$router.push("/login")
+      this.$router.push("/headlist");
     }
   },
 
@@ -45,11 +47,29 @@ export default {
     return {};
   },
   methods: {
-    // 点击退出登录  @click='logOut'
-    //logOut() {
-    // localStorage.removeItem('token')
-    // this.$router.push('/login')
-    //},
+    // 点击退出登录
+    logOut() {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+          // 调用token 删除token
+          getremove("token");
+          this.$router.push("/login");
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
   },
 };
 </script>
@@ -71,12 +91,12 @@ export default {
       .img {
         width: 33px;
         height: 26px;
-        margin: 8px 0 0 24px;
+        margin: 15px 0 0 24px;
         background: linear-gradient(#1493fa 18%, #02c4fa 100%);
       }
       span {
         position: absolute;
-        top: 8px;
+        top: 13px;
         left: 120px;
         font-weight: 700;
         font-size: 22px;
@@ -138,6 +158,7 @@ export default {
       width: 80%;
       height: 769px;
       background-color: #e8e9ea;
+      margin-top: -5px;
     }
   }
 }

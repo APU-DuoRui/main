@@ -7,7 +7,8 @@ import Router from 'vue-router'
 Vue.use(Router)
 // (2)导入组件  (懒加载技术  --随用随载--)
 // 1.声明一个主页页 面组(导入组件)
-const headlist = () => import('@/components/headlist.vue')
+// const headlist = () => import('@/components/headlist.vue')
+const headlistes = () => import('@/components/headlistes.vue')
 // 2.声明一个登录 组件(导入组件)
 const login = () => import('@/views/login/login.vue')
 // 3.声明一个注册 组件(导入组件)
@@ -21,7 +22,8 @@ const routes = [
     // 3.注册对象(组件)
     { path: "/register", component: register },
     // 4.后台主页面对象(组件)
-    { path: '/headlist', component: headlist }
+    // { path: '/headlist', component: headlist },
+    { path: '/headlistes', component: headlistes }
 ]
 
 // (4)将vue实例化出去

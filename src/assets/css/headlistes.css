@@ -1,0 +1,22 @@
+.el-header,
+.el-footer {
+  background-color: #fffffc;
+  color: #333;
+}
+
+.el-aside {
+  background-color: #fffffc;
+  color: #333;
+}
+
+.el-main {
+  background-color: #e8e9ea;
+  color: #333;
+  padding: 0;
+}
+
+body > .el-container {
+  margin-bottom: 40px;
+}
+
+

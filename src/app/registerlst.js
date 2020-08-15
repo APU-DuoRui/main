@@ -1,7 +1,10 @@
 // (1).导入axios
 // 如果要使用 ElementUI框架 必须要导入模块
 import { Message } from 'element-ui'
+// 导入 token 的删除 token
+import { getremove, getToken } from '@/app/token.js'
 import axios from 'axios'
+import router from '@/router/index.js'
 // 1. 声明一个变量来存储当前的基地址
 let $http = axios.create({
     // 2.可以将测试的地址赋值的 baseURL
@@ -15,6 +18,10 @@ let $http = axios.create({
 $http.interceptors.request.use(
     function (config) {
         // 3.1在发送请求之做什么
+        console.log(config)
+        // 这里可以做 存储token  
+        // 在请求头 在请求报头添加 token
+        config.headers.token = getToken('token')
         return config
     }, function (error) {
         // 3.2对请求错误做些什么
@@ -27,7 +34,19 @@ $http.interceptors.response.use(function (response) {
     // 4.2在发送请求之后做些什么
     // 把响应错误的数据统一处理
     if (response.data.code == 200) {
+        //  4.3 如果等于200 就登录成功
         return response
+        // 优化全局响应拦截token 参数错误
+    } else if (response.data.code == 206) {
+        // 4.4如果等于 206 就抛出异常 提示用户 需要重新登录 账号
+        // token出错处理
+        Message.error(response.data.message)
+        // 跳转登录页面(组件)
+        router.push('/')
+        // 清除掉 token 
+        getremove("token");
+        // 将处理好的数据返回出去
+        return Promise.reject(response.data.message)
     } else {
         // 4.3 这里使用 Element-ui框架  提示框
         // 5.添加响应拦截器

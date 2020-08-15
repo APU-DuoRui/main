@@ -10,6 +10,11 @@ function getLogin(key) {
     // 将处理好的数据返回出去
     return window.localStorage.getItem(key)
 }
-
+// 3.删除token 
+function getremove(key) {
+    // 3.1删除token
+    // 将处理好的数据返回出去
+    return window.localStorage.removeItem(key)
+}
 // 将数据暴露出来
-export  { getToken, getLogin }
+export { getToken, getLogin, getremove }

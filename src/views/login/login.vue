@@ -54,11 +54,7 @@
                   <el-checkbox v-model="form.checked" class="protocol">
                     <!-- `checked` 为 true 或 false -->
                     <!-- 这里是一个连接可以跳转页面 -->
-                    <span>
-                      我已阅读并同意
-                      <a href="#" style="color:#00aeff">用户协议</a>和
-                      <a href="#" style="color:#00aeff">隐私条款</a>
-                    </span>
+                    <span>我已阅读并同意<a href="#" style="color:#00aeff">用户协议</a>和<a href="#" style="color:#00aeff">隐私条款</a></span>
                   </el-checkbox>
                 </span>
               </el-form-item>
@@ -188,7 +184,7 @@ export default {
             console.log(res);
             this.$message.success("恭喜你登录成功");
             // 2.1做服务器匹配的账号和密码/验证码
-            this.$router.push("/headlist");
+            this.$router.push("/headlistes");
             // 2.2将当前的token存储到本地存储
             // localStorage.setItem("token");
             getToken("token", res.data.data.token);
