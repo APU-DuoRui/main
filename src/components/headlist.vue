@@ -11,7 +11,7 @@
       <!-- 头部模块右边 -->
       <div class="box2">
         <div>
-          <img src="~@/assets/img/logn02.png" alt />
+          <img src="~@/assets/img/tx.png" alt />
         </div>
         <span>李达,您好!!</span>
         <button>退出</button>
@@ -28,14 +28,33 @@
 </template>
 
 <script>
+// 导入封装好的token (将获取token时分离，就成为一个组件)
+import { getLogin } from "@/app/token.js";
 export default {
-  daat() {
+  // 判断当前的token是不是在存到本地 如果想要页面不跳转 就可以条件一个 creatd
+  created() {
+    // 如果token 就停止当前的页面(headlist)组件
+    window.console.log("获取token:", getLogin("token"));
+    // 判断有没有的页面有没有token 如果有则 跳转(headlist)组件  如果没有则跳转到登录页面(组件)
+    if (getLogin("token")) {
+      this.$router.push("/login")
+    }
+  },
+
+  data() {
     return {};
+  },
+  methods: {
+    // 点击退出登录  @click='logOut'
+    //logOut() {
+    // localStorage.removeItem('token')
+    // this.$router.push('/login')
+    //},
   },
 };
 </script>
 
-<style lang="less">
+<style lang='less'>
 .content {
   width: 100%;
   .box {
@@ -74,7 +93,6 @@ export default {
         width: 40px;
         height: 35px;
         border-radius: 50%;
-        background-color: red;
         overflow: hidden;
       }
       img {

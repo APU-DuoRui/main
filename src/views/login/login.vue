@@ -64,7 +64,7 @@
               </el-form-item>
               <!-- 登录按钮/注册按钮 -->
               <el-form-item>
-                <el-button class="box1" type="primary" @click="registe">登录</el-button>
+                <el-button class="box1" type="primary" @keyup.enter="registe" @click="registe">登录</el-button>
                 <br />
                 <el-button class="box1" type="primary" @click="canceEvent">立即创建</el-button>
               </el-form-item>
@@ -92,6 +92,7 @@
 // 将子组件导入到当前的父组件
 import register from "@/views/login/register.vue";
 import { getregister } from "@/app/register.js";
+import { getToken } from "@/app/token.js";
 export default {
   // 挂载到vue中
   components: {
@@ -189,7 +190,9 @@ export default {
             // 2.1做服务器匹配的账号和密码/验证码
             this.$router.push("/headlist");
             // 2.2将当前的token存储到本地存储
-            localStorage.setItem("token");
+            // localStorage.setItem("token");
+            getToken("token", res.data.data.token);
+            // console.log(getToken("token", res.data.data.token));
           });
         } else {
           // 3.失败就走这个条件
