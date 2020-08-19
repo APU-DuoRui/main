@@ -2,7 +2,7 @@
 // 如果要使用 ElementUI框架 必须要导入模块
 import { Message } from 'element-ui'
 // 导入 token 的删除 token
-import { getremove, getToken } from '@/app/token.js'
+import { getremove, getLogin } from '@/app/token.js'
 import axios from 'axios'
 import router from '@/router/index.js'
 // 1. 声明一个变量来存储当前的基地址
@@ -20,8 +20,9 @@ $http.interceptors.request.use(
         // 3.1在发送请求之做什么
         console.log(config)
         // 这里可以做 存储token  
-        // 在请求头 在请求报头添加 token
-        config.headers.token = getToken('token')
+        // 在请求头 在请求报头添加xx  获取 token
+        // config.headers.token = getLogin('token')
+        config.headers.token = getLogin('token')
         return config
     }, function (error) {
         // 3.2对请求错误做些什么
@@ -41,10 +42,10 @@ $http.interceptors.response.use(function (response) {
         // 4.4如果等于 206 就抛出异常 提示用户 需要重新登录 账号
         // token出错处理
         Message.error(response.data.message)
-        // 跳转登录页面(组件)
-        router.push('/')
         // 清除掉 token 
         getremove("token");
+        // 跳转登录页面(组件)
+        router.push('/login')
         // 将处理好的数据返回出去
         return Promise.reject(response.data.message)
     } else {
@@ -57,6 +58,7 @@ $http.interceptors.response.use(function (response) {
 },
     function (error) {
         // 5.2对响应错误做点什么
-        return Promise.reject(error);
+        // return Promise.reject(error);
+        return Promise.reject(error)
     });
 export default $http

@@ -4,7 +4,7 @@ function getToken(key, value) {
     window.localStorage.setItem(key, value)
 }
 
-// 2.获取token 
+// 2.获取getLogin
 function getLogin(key) {
     // 2.2获取token
     // 将处理好的数据返回出去
@@ -12,7 +12,7 @@ function getLogin(key) {
 }
 // 3.删除token 
 function getremove(key) {
-    // 3.1删除token
+    // 3.1删除token 
     // 将处理好的数据返回出去
     return window.localStorage.removeItem(key)
 }

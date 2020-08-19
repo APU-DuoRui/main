@@ -105,10 +105,10 @@ export default {
       form: {
         // 1.用户号码
         // phone: "18520409113",
-        phone: "",
+        phone: "18012345678",
         // 2.用户密码
         // password: "123456",
-        password: "",
+        password: "123456",
         // 3.验证码
         code: "",
         // 4.点击同意

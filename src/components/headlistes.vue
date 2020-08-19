@@ -3,83 +3,100 @@
     <el-header>
       <!-- 左边头部 -->
       <div class="box1">
-        <i
-          style="margin-bottom: 20px;"
-          @click="isCollapse"
-          :label="isCollapse"
-          class="el-icon-s-fold"
-        ></i>
+        <i style="margin-bottom: 20px;" @click="collapse=!collapse" class="el-icon-s-fold"></i>
         <img class="img" src="~@/assets/img/logn02.png" alt />
         <span>后台管理</span>
         <!-- 右边头部 -->
         <div class="box2">
-          <div>
-            <img src="~@/assets/img/tx.png" alt />
+          <div v-if="$store.state.userInfo != ''">
+            <img :src="baseUrl + '/' + $store.state.userInfo.avatar" alt />
           </div>
-          <p>李达,您好!!</p>
+          <p>{{$store.state.userInfo.username}},您好!!</p>
           <button @click="logOut">退出</button>
         </div>
       </div>
     </el-header>
-    <el-container class="content">
       <!-- 侧边列表 -->
-      <el-aside width="200px">
+    <el-container class="content">
+      <el-aside width="auto">
         <el-row>
           <el-col :span="24">
+            <!-- default-active : 默认选中某一个 -->
             <el-menu
-              default-active="2"
+              :default-active="$route.path"
+              :router="true"
               class="el-menu-vertical-demo"
-              @open="handleOpen"
-              @close="handleClose"
-              :collapse="false"
-              text-color="#ccc"
-              active-text-color="#ffd04b"
+              :collapse="collapse"
+              text-color="#000"
+              active-text-color="#008aff"
             >
-              <el-menu-item index="1">
-                <i class="el-icon-menu"></i>
-                <span slot="title">导航一</span>
+              <el-menu-item index="/views/headlistes/Datalist">
+                <i class="el-icon-pie-chart"></i>
+                <span slot="title">数据概览</span>
               </el-menu-item>
-              <el-menu-item index="2">
-                <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
+              <el-menu-item index="/views/headlistes/UsersList">
+                <i class="el-icon-user"></i>
+                <span slot="title">用户列表</span>
               </el-menu-item>
-              <!-- disabled 禁止 -->
-              <el-menu-item index="3">
-                <i class="el-icon-document"></i>
-                <span slot="title">导航三</span>
+              <!-- disabled 禁止(点击) -->
+              <el-menu-item index="/views/headlistes/QuestionList">
+                <i class="el-icon-collection"></i>
+                <span slot="title">题库列表</span>
               </el-menu-item>
-              <el-menu-item index="4">
-                <i class="el-icon-setting"></i>
-                <span slot="title">导航四</span>
+              <el-menu-item index="/views/headlistes/CompaniesList">
+                <i class="el-icon-office-building"></i>
+                <span slot="title">企业列表</span>
+              </el-menu-item>
+              <el-menu-item index="/views/headlistes/SubjectList">
+                <i class="el-icon-notebook-1"></i>
+                <span slot="title">学科列表</span>
               </el-menu-item>
             </el-menu>
           </el-col>
         </el-row>
       </el-aside>
       <!-- 内容 -->
-      <el-main>内容</el-main>
+      <el-main>
+        <!-- 设置路由出口 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
+// 导入封装好的接口
+import { getInfo } from "@/app/register.js";
 // 导入封装好的token (将获取token时分离，就成为一个组件)
-import { getLogin } from "@/app/token.js";
 // 导入删除 token
-import { getremove } from "@/app/token.js";
+import { getremove, getLogin } from "@/app/token.js";
 export default {
   // 1.使用created 查看有没有 token
   created() {
     // 1.1判断当前的页面没有吗token 如果没有则跳转登录页面 如果有token 则不会跳转登录(会默认在原来的主页面)
     if (!getLogin("token")) {
-      this.$router.push("/");
+      this.$router.push("/login");
+      return;
     }
+
+    // 2.用户进页面 默认 发送axios请求
+    getInfo().then((res) => {
+      // 调用vuex  封装好的数据
+      this.$store.state.userInfo = res.data.data;
+      // this.$store.state.userInfo = res.data.data;
+      console.log("111", res);
+    });
   },
   // (2)定义方法
   data() {
     // 将处理好的数据 返回出去
     return {
-      isCollapse: true,
+      collapse: false,
+      // 定义路由(是不是开启)
+      // router: true,
+      // 头像图片
+      baseUrl: process.env.VUE_APP_URL,
+      userInfo: "",
     };
   },
   // (3)统一管理方法
@@ -115,6 +132,11 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
+    /*   // 3.  点击 添加到嵌套路由
+    skipRouter(str) {
+      // 跳转嵌套
+      this.$router.push(str);
+    }, */
   },
 };
 </script>
@@ -133,12 +155,12 @@ export default {
   .img {
     width: 33px;
     height: 26px;
-    margin: 15px 0 0 24px;
+    margin: 15px 0 0 15px;
   }
   span {
     position: absolute;
     top: 13px;
-    left: 98px;
+    left: 95px;
     font-weight: 700;
     font-size: 20px;
     color: #49a1ff;
@@ -149,7 +171,7 @@ export default {
   position: relative;
   div {
     position: absolute;
-    top: -40px;
+    top: -45px;
     right: 195px;
     width: 40px;
     height: 35px;
@@ -163,7 +185,7 @@ export default {
   p {
     width: 85px;
     position: absolute;
-    top: -35px;
+    top: -37px;
     right: 100px;
     white-space: nowrap;
     overflow: hidden;
@@ -171,7 +193,7 @@ export default {
   }
   button {
     position: absolute;
-    top: -42px;
+    top: -44px;
     right: 10px;
     color: #fff;
     background-color: #0a9eff;

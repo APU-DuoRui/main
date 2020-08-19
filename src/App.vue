@@ -11,7 +11,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less">
 * {
   padding: 0;
   margin: 0;
@@ -19,4 +19,8 @@ export default {
 #app {
 overflow-x:hidden;
 }
+ #nprogress .bar {
+      background: red !important; //自定义颜色
+    }
+
 </style>
