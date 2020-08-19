@@ -76,6 +76,7 @@
         </el-table>
         <!-- 分页 -->
         <div class="block">
+           <!-- <span class="demonstration">{{pageSize}}</span> -->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -250,8 +251,11 @@ export default {
   color: #333;
   margin: 5px 12px;
 }
-.el-table th > .cell {
-  padding-left: 20px !important;
+/* .el-table th>.cell {
+  padding-left: -10px !important;
+} */
+  .el-table .cell {
+    margin-left: 10px !important;
 }
 .red {
   color: red;

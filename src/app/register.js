@@ -107,7 +107,7 @@ function listes(params) {
         params: params
     })
 }
-/* 写 api 主页(学科组件)的--学科列表-- */
+/* 写 api 主页(学科组件)的--修改学科状态。启用或者禁用账号-- */
 function status(params) {
     // 将处理好的数据返回出去
     return $http({

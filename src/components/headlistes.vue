@@ -84,7 +84,7 @@ export default {
       // 调用vuex  封装好的数据
       this.$store.state.userInfo = res.data.data;
       // this.$store.state.userInfo = res.data.data;
-      console.log("111", res);
+      // console.log("111", res);
     });
   },
   // (2)定义方法
