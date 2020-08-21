@@ -18,7 +18,7 @@ let $http = axios.create({
 $http.interceptors.request.use(
     function (config) {
         // 3.1在发送请求之做什么
-        console.log(config)
+        // console.log(config)
         // 这里可以做 存储token  
         // 在请求头 在请求报头添加xx  获取 token
         // config.headers.token = getLogin('token')

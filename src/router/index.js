@@ -30,7 +30,7 @@ const routes = [
     // 1.重定向 第一个页面 就登录页面
     { path: '/', redirect: "/login" },
     // 2.登录对象(组件)
-    { path: '/login', component: login,meta:{title:"登录"} },
+    { path: '/login', component: login, meta: { title: "登录", role: ["超级管理员", "管理员", "老师", "学生"] } },
     // 3.注册对象(组件) 注册模态框
     { path: "/register", component: register },
     // 4.后台主页面对象(组件)
@@ -41,13 +41,13 @@ const routes = [
             // (重定向)
             { path: "/", redirect: "/views/headlistes/Datalist" },
             // 数据概览  子组件
-            { path: "/views/headlistes/Datalist", component: Datalist,meta:{title:"数据概览"} },
+            { path: "/views/headlistes/Datalist", component: Datalist, meta: { title: "数据概览", role: ["超级管理员", "管理员", "老师", "学生"] } },
             // 用户列表  子组件
-            { path: "/views/headlistes/UsersList", component: UsersList,meta:{title:"用户列表"} },
+            { path: "/views/headlistes/UsersList", component: UsersList, meta: { title: "用户列表" } },
             // 题库列表  子组件
-            { path: "/views/headlistes/QuestionList", component: QuestionList,meta:{title:"题库列表"} },
+            { path: "/views/headlistes/QuestionList", component: QuestionList, meta: { title: "题库列表" } },
             // 学科列表  子组件
-            { path: "/views/headlistes/SubjectList", component: SubjectList,meta:{title:"学科列表"} },
+            { path: "/views/headlistes/SubjectList", component: SubjectList, meta: { title: "学科列表" } },
             // 企业列表 子组件
             { path: "/views/headlistes/CompaniesList", component: CompaniesList, meta: { title: "企业列表" } },
             // 学科的摩模态框
@@ -62,16 +62,29 @@ let router = new Router({
 })
 // (5)这一段代码的作用是 可以减小编写代码的bug
 Vue.config.productionTip = false;
-//导入nprogress
+//导入nprogress 
 import NProgress from 'nprogress'
 // css样式
 import 'nprogress/nprogress.css'
+import { Message } from 'element-ui' // Message===this.$message
+import { getremove } from "@/app/token.js"
+import store from "@/store/index.js"
 // 路由导航守卫(前)
 router.beforeEach((to, from, next) => {
     NProgress.start()
-    next()
-    console.log("去哪里:", to)
-    console.log("从哪来", from)
+    if (!to.meta.roles.includes(store.state.role)) {
+        // if (!to.meta.roles.includes(store.state.role)) {
+        // 提示用户 
+        Message.error('您没权访问该页面')
+        // 删除token
+        getremove("token")
+        // 跳转登录页面
+        next('/login')
+    } else {
+        next()
+        console.log("去哪里:", to)
+        console.log("从哪来", from)
+    }
 })
 // 导航守卫(后)
 router.afterEach((to) => {

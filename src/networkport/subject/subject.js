@@ -21,7 +21,7 @@ function information(params) {
         // 请求路径 url
         url: "/question/one",
         // 请求方法 GET /POST
-        method: "",
+        method: "POST",
         // 服务器需要的参数
         params
 
@@ -49,6 +49,38 @@ function remove(params) {
         params
     })
 }
-
+// 编辑题目接口
+function editTopic(params) {
+    return $http({
+        // 请求路径url
+        url: "/question/edit",
+        // 请求的方法
+        method: 'POST',
+        // 参数
+        params
+    })
+}
+// 题目列表
+function list(data) {
+    return $http({
+        // 请求路径url
+        url: "/question/list",
+        // 请求的方法
+        method: 'GET',
+        // 参数
+        data
+    })
+}
+// 上传文件
+function upload(data) {
+    return $http({
+        // 请求路径url
+        url: "/question/upload",
+        // 请求的方法
+        method: 'GET',
+        // 参数
+        data
+    })
+}
 // 3.暴露接口
-export { release, information, state,remove }
+export { release, information, state, remove, editTopic, list, upload }
