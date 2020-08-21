@@ -10,27 +10,25 @@ Vue.use(Router)
 // const headlist = () => import('@/components/headlist.vue')
 const headlistes = () => import('@/components/headlistes.vue')
 // 2.声明一个登录 组件(导入组件)
-const login = () => import('@/views/login/login.vue')
+const Login = () => import('@/components/Login/login.vue')
 // 3.声明一个注册 组件(导入组件)
-const register = () => import('@/views/login/register.vue')
+const register = () => import('@/components/Login/register.vue')
 // 4.导入嵌套的子组件  --数据概览
-const Datalist = () => import('@/views/Subjectlist/Datalist.vue')
+const Datalist = () => import('@/components/Datalist/Datalist.vue')
 // 导入嵌套的子组件  -- 用户列表
-const UsersList = () => import('@/views/Subjectlist/UsersList.vue')
+const UsersList = () => import('@/components/UsersList/UsersList.vue')
 // 导入嵌套的子组件  -- 题库列表
-const QuestionList = () => import('@/views/Subjectlist/QuestionList.vue')
+const QuestionList = () => import('@/components/QuestionList/QuestionList.vue')
 // 导入嵌套的子组件  -- 学科列表
-const SubjectList = () => import('@/views/Subjectlist/SubjectList.vue')
-// 导入嵌套的子组件  -- 模态框(添加学科内容)列表
-const add = () => import('@/views/modal/add.vue')
+const SubjectList = () => import('@/components/Subjectlist/SubjectList.vue')
 // 导入嵌套的子组件  -- 企业列表
-const CompaniesList = () => import('@/views/Subjectlist/CompaniesList.vue')
+const CompaniesList = () => import('@/components/CompaniesList/CompaniesList.vue')
 // (3)使用路由
 const routes = [
     // 1.重定向 第一个页面 就登录页面
     { path: '/', redirect: "/login" },
     // 2.登录对象(组件)
-    { path: '/login', component: login, meta: { title: "登录", role: ["超级管理员", "管理员", "老师", "学生"] } },
+    { path: '/login', component: Login, meta: { title: "登录", roles: ["超级管理员", "管理员", "老师", "学生"] } },
     // 3.注册对象(组件) 注册模态框
     { path: "/register", component: register },
     // 4.后台主页面对象(组件)
@@ -39,19 +37,17 @@ const routes = [
         component: headlistes,
         children: [
             // (重定向)
-            { path: "/", redirect: "/views/headlistes/Datalist" },
+            { path: "/", redirect: "/components/headlistes/Datalist" },
             // 数据概览  子组件
-            { path: "/views/headlistes/Datalist", component: Datalist, meta: { title: "数据概览", role: ["超级管理员", "管理员", "老师", "学生"] } },
+            { path: "/components/headlistes/Datalist", component: Datalist, meta: { title: "数据概览", roles: ["超级管理员", "管理员", "老师"] } },
             // 用户列表  子组件
-            { path: "/views/headlistes/UsersList", component: UsersList, meta: { title: "用户列表" } },
+            { path: "/components/headlistes/UsersList", component: UsersList, meta: { title: "用户列表", roles: ["超级管理员", "管理员"] } },
             // 题库列表  子组件
-            { path: "/views/headlistes/QuestionList", component: QuestionList, meta: { title: "题库列表" } },
+            { path: "/components/headlistes/QuestionList", component: QuestionList, meta: { title: "题库列表", roles: ["超级管理员", "管理员"] } },
             // 学科列表  子组件
-            { path: "/views/headlistes/SubjectList", component: SubjectList, meta: { title: "学科列表" } },
+            { path: "/components/headlistes/SubjectList", component: SubjectList, meta: { title: "学科列表", roles: ["超级管理员", "管理员", "老师", "学生"] } },
             // 企业列表 子组件
-            { path: "/views/headlistes/CompaniesList", component: CompaniesList, meta: { title: "企业列表" } },
-            // 学科的摩模态框
-            { path: "/views/modal/add", component: add }
+            { path: "/components/headlistes/CompaniesList", component: CompaniesList, meta: { title: "企业列表", roles: ["超级管理员", "管理员"] } },
         ]
     }
 ]

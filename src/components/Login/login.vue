@@ -86,8 +86,11 @@
 <script>
 // 第二步 (使用子组件的步骤)
 // 将子组件导入到当前的父组件
-import register from "@/views/login/register.vue";
-import { getregister } from "@/app/register.js";
+// 导入模态框
+import register from "@/components/Login/register.vue";
+// 导入登录接口
+import { getregister } from "@/port/LoginAPP/app.js";
+// 导入token
 import { getToken } from "@/app/token.js";
 export default {
   // 挂载到vue中

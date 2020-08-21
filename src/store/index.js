@@ -10,7 +10,6 @@ const store = new Vuex.Store({
     state: {
         userInfo: '',
         role: "超级管理员",
-
     }
 })
 

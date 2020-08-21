@@ -1,9 +1,8 @@
 // 1.导入 $http
 import $http from '@/app/registerlst.js'
 
-
 // (1) 封装axios请求
-
+//——————————————————— 企业列表接口  —————————————————————————
 // (2) 封装(写接口)
 // a.获取企业列表
 function enterpriselist(params) {

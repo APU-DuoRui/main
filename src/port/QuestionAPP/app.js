@@ -1,7 +1,8 @@
 // 1.导入 $http
 import $http from '@/app/registerlst.js'
 
-// 2.写 封装axios请求
+// 2.写接口
+//——————————————————— 题库列表接口  —————————————————————————
 
 // 发布题目
 function release(params) {

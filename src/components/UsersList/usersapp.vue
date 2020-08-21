@@ -40,7 +40,7 @@
 
 <script>
 // 导入 封装好的api (发送axios网络请求)
-import { editUserList, addUserList } from "@/networkport/usersApp/UsersList.js";
+import { editUserList, addUserList } from "@/port/UsersAPP/app.js";
 export default {
   props: ["roleObj"],
   // 添加一个监听器 用于监听当前输入框的内容如果用户添加/编辑 则需要清空文本

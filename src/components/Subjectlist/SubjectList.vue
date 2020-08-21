@@ -76,7 +76,7 @@
         </el-table>
         <!-- 分页 -->
         <div class="block">
-           <!-- <span class="demonstration">{{pageSize}}</span> -->
+          <!-- <span class="demonstration">{{pageSize}}</span> -->
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -95,9 +95,9 @@
 
 <script>
 // 导入  添加的模态框
-import add from "@/views/modal/add.vue";
+import add from "@/components/Subjectlist/add.vue";
 // 1.导入 封装好api 获取学科列表
-import { listes, remove, status } from "@/app/register.js";
+import { listes, remove, status } from "@/port/SubjectAPP/app.js";
 export default {
   //挂载在vue中
   components: {
@@ -170,6 +170,8 @@ export default {
     add() {
       // 激活 当前子组件的模态框  将isShow 修改为true
       this.$refs.add.isShow = true;
+      // 传送当前的按钮的(add)
+      this.$refs.add.mode = "add";
     },
 
     // 编辑
@@ -254,8 +256,8 @@ export default {
 /* .el-table th>.cell {
   padding-left: -10px !important;
 } */
-  .el-table .cell {
-    margin-left: 10px !important;
+.el-table .cell {
+  margin-left: 10px !important;
 }
 .red {
   color: red;

@@ -104,9 +104,9 @@ import {
   enterpriselist,
   enterprisestatus,
   enterpriseremove,
-} from "@/networkport/enterpriseApp/app";
+} from "@/port/CompaniesAPP/app.js";
 // 导入字组件 enterprise 企业的(模态框)
-import enterprise from "@/views/modal/enterprise.vue";
+import enterprise from "@/components/CompaniesList/enterprise.vue";
 export default {
   // 1.将字组件(挂在vue中)
   components: {

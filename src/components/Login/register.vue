@@ -106,8 +106,8 @@
 </template>
 
 <script>
-// 第二步 导入对应的API替换在本页面发送axios网络
-import { getPhoneColdeApi, registerModule } from "@/app/register.js";
+// 第二步 导入对应的API替换在本页面发送axios网络   导入接口注册账号的接口
+import { getPhoneColdeApi, registerModule } from "@/port/LoginAPP/app.js";
 export default {
   // 在上传头像 可以注册一个监听事件
   watch: {

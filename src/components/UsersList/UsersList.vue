@@ -4,11 +4,14 @@
       <el-header>
         <el-form :inline="true" :model="form" ref="form" class="demo-form-inline">
           <el-form-item label="用户名称" prop="username">
+            <!-- 用户名称 -->
             <el-input v-model="form.username"></el-input>
           </el-form-item>
+          <!-- 用户邮箱 -->
           <el-form-item label="用户邮箱" prop="email">
             <el-input v-model="form.email"></el-input>
           </el-form-item>
+          <!-- 角色 -->
           <el-form-item label="角色" prop="role_id">
             <el-select v-model="form.role_id" placeholder="请选择角色">
               <el-option
@@ -79,9 +82,9 @@ import {
   getUserListList,
   delUserList,
   setUserListStatus,
-} from "@/networkport/usersApp/UsersList.js";
+} from "@/port/UsersAPP/app.js";
 // 导入当前的模态框 第一步
-import usersapp from "@/views/modal/usersapp.vue";
+import usersapp from "@/components/UsersList/usersapp.vue";
 export default {
   // 第二步定义在vue中
   components: {
@@ -101,8 +104,11 @@ export default {
       },
       // 表单
       form: {
+        // 用户名称
         username: "",
+        // 用户邮箱
         email: "",
+        // 角色
         role_id: "",
       },
       // 表格 声明一个空数组 来存储服务器返回的数据
@@ -139,8 +145,9 @@ export default {
 
     // 清空文本
     reset() {
-      // this.$refs.form.resetFields();
+      // 通过form绑定 prop="绑定名"  v-model="绑定名" 才能使用 resetFields(清空文本)
       this.$refs.form.resetFields();
+      // 刷新页面(数据)
       this.search();
     },
 
@@ -148,6 +155,8 @@ export default {
     add() {
       // 触发模态框
       this.$refs.usersapp.isShow = true;
+      // 传送当前的按钮的(add)
+      this.$refs.usersapp.mode = "add";
     },
 
     // 编辑
@@ -171,7 +180,9 @@ export default {
 
     // 删除
     remove(id) {
+      // 调用接口 来删除当前的数据
       delUserList({ id: id }).then(() => {
+        // 提示用户
         this.$message.success("删除成功");
         // 刷新数据
         this.search();
@@ -180,11 +191,13 @@ export default {
     // 页容量改变
     handleSizeChange(size) {
       this.pagination.pageSize = size;
+      // 刷新(数据)
       this.search();
     },
     // 页码改变
     handleCurrentChange(page) {
       this.pagination.currentPage = page;
+      // 刷新(页码)
       this.getData();
     },
   },

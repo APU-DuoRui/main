@@ -30,24 +30,24 @@
               text-color="#000"
               active-text-color="#008aff"
             >
-              <el-menu-item index="/views/headlistes/Datalist">
+              <el-menu-item index="/components/headlistes/Datalist">
                 <i class="el-icon-pie-chart"></i>
                 <span slot="title">数据概览</span>
               </el-menu-item>
-              <el-menu-item index="/views/headlistes/UsersList">
+              <el-menu-item index="/components/headlistes/UsersList">
                 <i class="el-icon-user"></i>
                 <span slot="title">用户列表</span>
               </el-menu-item>
               <!-- disabled 禁止(点击) -->
-              <el-menu-item index="/views/headlistes/QuestionList">
+              <el-menu-item index="/components/headlistes/QuestionList">
                 <i class="el-icon-collection"></i>
                 <span slot="title">题库列表</span>
               </el-menu-item>
-              <el-menu-item index="/views/headlistes/CompaniesList">
+              <el-menu-item index="/components/headlistes/CompaniesList">
                 <i class="el-icon-office-building"></i>
                 <span slot="title">企业列表</span>
               </el-menu-item>
-              <el-menu-item index="/views/headlistes/SubjectList">
+              <el-menu-item index="/components/headlistes/SubjectList">
                 <i class="el-icon-notebook-1"></i>
                 <span slot="title">学科列表</span>
               </el-menu-item>
@@ -66,7 +66,7 @@
 
 <script>
 // 导入封装好的接口
-import { getInfo } from "@/app/register.js";
+import { getInfo } from "@/port/SubjectAPP/app.js";
 // 导入封装好的token (将获取token时分离，就成为一个组件)
 // 导入删除 token
 import { getremove, getLogin } from "@/app/token.js";

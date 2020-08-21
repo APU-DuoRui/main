@@ -218,18 +218,16 @@
 </template>
 
 <script>
-// 导入封装好的axios  题目列表的axios(接口)
-import { list } from "@/networkport/subject/subject.js";
+// 导入封装好的axios  题目列表的axios(接口) 导入 编辑/状态/删除的接口
+import { list,remove, state } from "@/port/QuestionAPP/app.js";
 // 导入封装好是axios  学科列表的数据 (接口)
-import { listes } from "@/app/register.js";
+import { listes } from "@/port/SubjectAPP/app.js";
 
-// 导入 编辑/状态/删除的接口
-import { remove, state } from "@/networkport/subject/subject.js";
 // 导入 模态框 questionapp
-import questionapp from "@/views/modal/questionapp.vue";
+import questionapp from "@/components/QuestionList/questionapp.vue";
 
 // 导入 企业列表的接口
-import { enterpriselist } from "@/networkport/enterpriseApp/app.js";
+import { enterpriselist } from "@/port/CompaniesAPP/app.js";
 export default {
   // 1.将 模态框 挂载vue中(注册 questionapp)
   components: {
@@ -391,6 +389,8 @@ export default {
     add() {
       // 触发模态框  questionapp
       this.$refs.questionapp.isShow = true;
+      // 传当前的字段
+      this.$refs.questionapp.mode="add"
     },
 
     // 编辑

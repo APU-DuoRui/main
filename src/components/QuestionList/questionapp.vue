@@ -1,10 +1,11 @@
 <template>
   <el-dialog :visible.sync="isShow" fullscreen width="100px">
+    <!-- 判断当前模态框的标题是不是 被点击新增题库测试 或者 编辑题库测试  -->
     <div slot="title" class="title">{{mode=="add"?"新增题库测试":"编辑题库测试"}}</div>
     <el-form :model="form" ref="form" label-width="100px">
       <!-- 学科 -->
-      <el-form-item label="学科" prop="subject" >
-        <el-select v-model="form.subject" >
+      <el-form-item label="学科" prop="subject">
+        <el-select v-model="form.subject">
           <el-option
             v-for="(item,index) in SubjectList"
             :key="index"
@@ -32,7 +33,7 @@
       </el-form-item>
       <!-- 城市 -->
       <el-form-item label="城市" prop="city">
-        <el-cascader v-model="form.city" :options="options"  :props="{value:'label'}"></el-cascader>
+        <el-cascader v-model="form.city" :options="options" :props="{value:'label'}"></el-cascader>
       </el-form-item>
       <!-- 题型 -->
       <el-form-item label="题型" prop="type">
@@ -52,7 +53,8 @@
           :label="+key"
         >{{value}}</el-radio>
       </el-form-item>
-
+      <hr />
+      <!-- 试题标题 -->
       <el-form-item label="试题标题" class="setTop">
         <!-- 富文本有二个东西
           v-model="双向绑定"
@@ -60,14 +62,14 @@
         -->
         <quillEditor v-model="form.title" @change="editorChange"></quillEditor>
       </el-form-item>
-
       <!-- 单选 -->
-      <el-form-item label="typeObj">
+      <el-form-item :label="typeObj[form.type]" :prop="typeAnObj[form.type]">
         <!-- 子组件触发父组件  @子组件方法名 ="父组件方法" -->
         <!-- 触发 （子组件触发） this.$emit("子组件方法名",参数) -->
         <!-- <allSelect :form="form" @validateOther="validateOther"></allSelect> -->
       </el-form-item>
     </el-form>
+    <!-- 按钮 -->
     <div slot="footer" class="dialog-footer">
       <el-button @click="isShow = false">取 消</el-button>
       <el-button type="primary" @click="affirm">确 定</el-button>
@@ -76,18 +78,23 @@
 </template>
 
 <script>
+// 导入 富文本 的模块
 import { quillEditor } from "vue-quill-editor";
+// 富文本的css样式
 import "quill/dist/quill.core.css";
+// 富文本的css样式
 import "quill/dist/quill.snow.css";
+// 富文本的css样式
 import "quill/dist/quill.bubble.css";
 
 // 导入 级联模块
 import { regionData } from "element-china-area-data";
 
 // 导入 接口  新增接口 / 编辑接口
-import { editTopic } from "@/networkport/subject/subject.js";
+import { editTopic } from "@/port/QuestionAPP/app.js";
 export default {
   components: {
+    // 定义富文本
     quillEditor,
   },
   // 通过 props  接收 参数父组件
@@ -102,7 +109,9 @@ export default {
   // 添加一个监听器事件
   watch: {
     isShow(value) {
+      // 判断value(当前的值) 是不是等于false 如果等于false 会执行下面的条件
       if (value == false) {
+        // 清除form的表单的数据
         this.form = {
           //  3.2表单
           form: {
@@ -124,19 +133,19 @@ export default {
             create_date: "",
             // 标题
             title: "",
-            //	是	string	单选题答案
+            // 单选题答案	是	string
             single_select_answer: "",
-            //	是	array	多选题答案
+            // 多选题答案	是	array
             multiple_select_answer: "",
-            //	是	string	简答题答案
+            // 简答题答案	是	string
             short_answer: "",
-            //	是	string	解析视频地址
+            // 解析视频地址	是	string
             video: "",
-            //	是	string	答案解析
+            // 答案解析	是	string
             answer_analyze: "",
-            //	是	string	答案备注
+            // 答案备注	是	string
             remark: "",
-            //	是	array	选项，介绍，图片介绍
+            // 选项，介绍，图片介绍	是	array
             select_options: "",
           },
         };
@@ -148,17 +157,13 @@ export default {
       }
     },
   },
-
+  // 定义方法
   data() {
     return {
       isShow: false,
-      // 3.1 声明一个数组
-      /*   // (题库列表)
-      tableData: [],
-      // (学科列表)
-      SubjectList: [], */
+      // 3.1
+      //  级联模块
       options: regionData,
-
       //  3.2表单
       form: {
         // 学科
@@ -182,7 +187,14 @@ export default {
         // 标题
         title: "",
       },
+      // 绑定通过子(组件)  mode
       mode: "add",
+      // 选向 (单选题答案/多选题答案/简答题答案)
+      typeAnObj: {
+        1: "single_select_answer",
+        2: "multiple_select_answer",
+        3: "short_answer",
+      },
     };
   },
   // 统一管理方法
@@ -247,11 +259,10 @@ export default {
   margin-left: 0 !important;
   margin-top: 60px;
 }
-.el-select{
+.el-select {
   width: 100%;
 }
 .el-cascader .el-input {
   width: 500px;
 }
-
 </style>
