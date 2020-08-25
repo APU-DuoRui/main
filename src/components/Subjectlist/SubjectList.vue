@@ -80,6 +80,7 @@
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
+            :current-page="pagination.currentPage"
             :page-sizes="[1, 10, 20,30, 40]"
             :page-size="pagination.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
@@ -123,10 +124,10 @@ export default {
       // 3.分页
       pagination: {
         // 页码
-        currentPage: "",
+        currentPage: 1,
         // 页容量
-        pageSize: 5,
-        tolal: "",
+        pageSize: 1,
+        tolal: 100,
       },
     };
   },
@@ -149,6 +150,7 @@ export default {
       listes(sum).then((res) => {
         // 将服务器返回的数据赋值给数组(渲染到页面)
         this.tableData = res.data.data.items;
+        this.pagination.total = res.data.data.pagination.total;
       });
     },
     // 查询
@@ -200,7 +202,6 @@ export default {
       remove({ id: id }).then(() => {
         // 如果删除就提示用户(删除成功)
         this.$message.success("删除成功");
-
         // 需要重新刷新页面 (重新发送axios请求)
         this.getData();
       });
@@ -208,15 +209,13 @@ export default {
 
     // 分页(1)--(管理发送的条数)
     handleSizeChange(size) {
-      console.log(`每页 ${size} 条`);
       // 将服务器返回的数据 赋值给当前的分页
       this.pagination.pageSize = size;
-      // 每当数据返回的时 需要手动修改当前数据返回第一页
-      this.pagination.currentPage = 1;
+      // 每当数据返回的时 需要手动修改当前数据返回第一页(调用搜索按钮的方法)
+      this.inquire();
     },
     // 分页(2)
     handleCurrentChange(page) {
-      console.log(`当前页: ${page}`);
       // 将当前服务器返回的数据 赋值给当前的currentPage 然后渲染到页面上
       this.pagination.currentPage = page;
       // 调用上面封装好的发送axios请求

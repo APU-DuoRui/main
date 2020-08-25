@@ -129,7 +129,7 @@ export default {
                 callback(new Error("请确认输入手机号码"));
               }
             },
-            trigger: "blur",
+            trigger: "change",
           },
         ],
         // 角色

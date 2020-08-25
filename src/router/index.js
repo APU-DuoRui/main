@@ -11,9 +11,7 @@ Vue.use(Router)
 const headlistes = () => import('@/components/headlistes.vue')
 // 2.声明一个登录 组件(导入组件)
 const Login = () => import('@/components/Login/login.vue')
-// 3.声明一个注册 组件(导入组件)
-const register = () => import('@/components/Login/register.vue')
-// 4.导入嵌套的子组件  --数据概览
+// 3.导入嵌套的子组件  --数据概览
 const Datalist = () => import('@/components/Datalist/Datalist.vue')
 // 导入嵌套的子组件  -- 用户列表
 const UsersList = () => import('@/components/UsersList/UsersList.vue')
@@ -29,9 +27,7 @@ const routes = [
     { path: '/', redirect: "/login" },
     // 2.登录对象(组件)
     { path: '/login', component: Login, meta: { title: "登录", roles: ["超级管理员", "管理员", "老师", "学生"] } },
-    // 3.注册对象(组件) 注册模态框
-    { path: "/register", component: register },
-    // 4.后台主页面对象(组件)
+    // 3.后台主页面对象(组件)
     {
         path: '/headlistes',
         component: headlistes,
@@ -39,15 +35,15 @@ const routes = [
             // (重定向)
             { path: "/", redirect: "/components/headlistes/Datalist" },
             // 数据概览  子组件
-            { path: "/components/headlistes/Datalist", component: Datalist, meta: { title: "数据概览", roles: ["超级管理员", "管理员", "老师"] } },
+            { path: "/components/headlistes/Datalist",  component: Datalist, meta: { icon: 'el-icon-pie-chart', title: "数据概览", roles: ["超级管理员", "管理员", "老师"] } },
             // 用户列表  子组件
-            { path: "/components/headlistes/UsersList", component: UsersList, meta: { title: "用户列表", roles: ["超级管理员", "管理员"] } },
+            { path: "/components/headlistes/UsersList",  component: UsersList, meta: { icon: 'el-icon-user', title: "用户列表", roles: ["超级管理员", "管理员"] } },
             // 题库列表  子组件
-            { path: "/components/headlistes/QuestionList", component: QuestionList, meta: { title: "题库列表", roles: ["超级管理员", "管理员"] } },
-            // 学科列表  子组件
-            { path: "/components/headlistes/SubjectList", component: SubjectList, meta: { title: "学科列表", roles: ["超级管理员", "管理员", "老师", "学生"] } },
+            { path: "/components/headlistes/QuestionList",  component: QuestionList, meta: { icon: 'el-icon-edit-outline', title: "题库列表", roles: ["超级管理员", "管理员", "老师"] } },
             // 企业列表 子组件
-            { path: "/components/headlistes/CompaniesList", component: CompaniesList, meta: { title: "企业列表", roles: ["超级管理员", "管理员"] } },
+            { path: "/components/headlistes/CompaniesList",  component: CompaniesList, meta: { icon: 'el-icon-notebook-1', title: "企业列表", roles: ["超级管理员"] } },
+            // 学科列表  子组件
+            { path: "/components/headlistes/SubjectList",  component: SubjectList, meta: { icon: 'el-icon-office-building', title: "学科列表", roles: ["超级管理员", "管理员", "老师", "学生"] } },
         ]
     }
 ]

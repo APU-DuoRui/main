@@ -44,7 +44,7 @@
                 <el-select v-model="form.enterprise" placeholder="请选择企业">
                   <!-- 遍历从服务器返回的数据 将需要的数据直接通过点语法点出来就可以使用-->
                   <el-option
-                    v-for="(item,index) in enterprise "
+                    v-for="(item,index) in enterprise"
                     :key="index"
                     :label="item.name"
                     :value="item.id"
@@ -102,8 +102,8 @@
             <el-col :span="5">
               <el-form-item label="状态" prop="status">
                 <el-select v-model="form.status">
-                  <el-option label="禁用" value="0"></el-option>
-                  <el-option label="启用" value="1"></el-option>
+                  <el-option label="禁用" :value="0"></el-option>
+                  <el-option label="启用" :value="1"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -141,7 +141,10 @@
         <el-table :data="tableData" border>
           <el-table-column label="序号" width="100">
             <!-- 因为服务器没有序号只能通过自定义的序号  (使用插值语法) -->
-            <template v-slot="scope">{{scope.$index+1}}</template>
+            <!-- pagination.pageSize(页码) * pagination.currentPage(当前页码) + scope.$index+1(当前的序码) -->
+            <template
+              v-slot="scope"
+            >{{pagination.pageSize*(pagination.currentPage-1)+scope.$index+1}}</template>
           </el-table-column>
           <!-- 题目 -->
           <el-table-column label="题目" width="180">
@@ -177,14 +180,16 @@
           <el-table-column prop="address" label="操作">
             <template v-slot="scope">
               <el-button type="text" @click="compile(scope.row)">编辑</el-button>
-              <el-button type="text" @click="state(scope.row.id)">{{scope.row.status==1?'禁用':'启用'}}</el-button>
+              <el-button
+                type="text"
+                @click="state(scope.row.id)"
+              >{{scope.row.status=="1"?'禁用' : '启用' }}</el-button>
               <el-button type="text" @click="remove(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
         <div class="pagination">
-          <!-- 
-                size-change:页容量改变
+          <!-- size-change:页容量改变
                 current-change:页码改变
                 current-page:默认选中哪一页
                 page-sizes:页容量选项
@@ -213,13 +218,14 @@
       :typeObj="typeObj"
       :diffObj="diffObj"
       :enterprise="enterprise"
+      :mode="add"
     ></questionapp>
   </div>
 </template>
 
 <script>
 // 导入封装好的axios  题目列表的axios(接口) 导入 编辑/状态/删除的接口
-import { list,remove, state } from "@/port/QuestionAPP/app.js";
+import { questionList, remove, state } from "@/port/QuestionAPP/app.js";
 // 导入封装好是axios  学科列表的数据 (接口)
 import { listes } from "@/port/SubjectAPP/app.js";
 
@@ -228,6 +234,7 @@ import questionapp from "@/components/QuestionList/questionapp.vue";
 
 // 导入 企业列表的接口
 import { enterpriselist } from "@/port/CompaniesAPP/app.js";
+
 export default {
   // 1.将 模态框 挂载vue中(注册 questionapp)
   components: {
@@ -235,21 +242,23 @@ export default {
   },
   // 2.从用户进来页面 就默认发送axios请求  获取表格的时数据
   created() {
-    // 调用axios接口 (题目列表)
-    /*   let _query = {
-      page: 1,
-      limit: 1000,
+    // 声明一个变量来存储当前的 页码
+    let sum = {
+      /*  // 页码
+      page: 1, */
+      // 请求的页码
+      limit: 1,
     };
-    list(_query).then((res) => {
-      this.tableData = res.data.data.items;
-      // console.log("题库列表", res.data.data.items);
-    });
     // 调用axios接口 (学科列表)
-    listes(_query).then((res) => {
+    listes(sum).then((res) => {
       this.SubjectList = res.data.data.items;
+      console.log("学科列表", res.data.data.items);
+    });
+    // 获取企业列表的数据
+    enterpriselist(sum).then((res) => {
+      this.enterprise = res.data.data.items;
       // console.log("学科列表", res.data.data.items);
     });
- */
     // 这里可以封装(函数) 减小代码冗余
     this.getData();
   },
@@ -257,14 +266,23 @@ export default {
   // 3.定义方法
   data() {
     return {
-      // 3.1 声明一个数组
+      // 3.1分页插件
+      pagination: {
+        // 当前页码
+        currentPage: 1, 
+        // 页码
+        pageSize: 1,
+        // 容量
+        total: 100,
+      },
+      // 4.1 声明一个数组
       // (题库列表)
       tableData: [],
       // (学科列表)
       SubjectList: [],
       // 企业列表
       enterprise: [],
-      //  3.2表单
+      //  4.2表单
       form: {
         // 学科
         subject: "",
@@ -284,9 +302,12 @@ export default {
         create_date: "",
         // 标题
         title: "",
+        // 页码
+        page: "",
+        // 页尺寸
+        limit: "",
       },
-
-      // 3.3  题目/题型/题目难度
+      // 5.1  题目/题型/题目难度
       // 题目类型:1(初级),2(中级),3(高级)
       stepObj: {
         1: "初级",
@@ -299,22 +320,11 @@ export default {
         2: "多选",
         3: "简答",
       },
-
       // 	题目难度 1简单 、2一般 、3困难
       diffObj: {
         1: "简单",
         2: "一般",
         3: "困难",
-      },
-
-      // 分页插件
-      pagination: {
-        // 当前页码
-        currentPage: 1,
-        // 页码
-        pageSize: 1,
-        // 容量
-        total: 5,
       },
     };
   },
@@ -326,56 +336,34 @@ export default {
         // 获取form表单的数据
         ...this.form,
         // 获取页码
-        page: 1,
-        // 获取页的码容量
-        limit: 1000,
-        /*  page: this.pagination.currentPage,
-        limit: this.pagination.pageSize, */
-      };
-      // 调用axios接口 (题目列表)
-      list(ym).then((res) => {
-        this.tableData = res.data.data.items;
-        // console.log("题库列表", res.data.data.items);
-      });
-      // 调用axios接口 (学科列表)
-      listes(ym).then((res) => {
-        this.SubjectList = res.data.data.items;
-        // console.log("学科列表", res.data.data.items);
-      });
-      // 获取企业列表的数据
-      enterpriselist(ym).then((res) => {
-        this.enterprise = res.data.data.items;
-      });
-    },
-
-    // 封装一个页码的函数
-    /*   getlist() {
-      let yzm = {
-        ...this.form,
         page: this.pagination.currentPage,
+        // 获取页的码容量
         limit: this.pagination.pageSize,
       };
       // 调用axios接口 (题目列表)
-      list(yzm).then((res) => {
-        let yzmj = res.data.items;
-        // console.log("题库列表", res.data.data.items);
-        yzmj.forEach((item) => {
+      // （题库）题目列表
+      questionList(ym).then((res) => {
+        // this.tableData = res.data.data.items;
+        let _sum = res.data.data.items;
+        // 可以修改 原数组的数据 (他有个缺点就是遍历不会停止下来)
+        _sum.forEach((item) => {
           item.city = item.city.split(",");
           item.multiple_select_answer = item.multiple_select_answer.split(",");
-          this.list = yzmj;
-          window.console.log("list", this.list);
-          this.pagination.total = res.data.pagination.total;
-          window.console.log("题库列表数据:", res);
         });
+        // 处理好的数据 将数据赋值给 表单
+        this.tableData = _sum;
+        // 将处理好的页码 赋值给  total(容量)
+        this.pagination.total = res.data.data.pagination.total;
+        window.console.log("题库列表数据:", res);
       });
-    }, */
+    },
+
     // 搜索
     search() {
       // 搜索的结果必须是第一页
       this.pagination.currentPage = 1;
       // 调用封装好的数据
       this.getData();
-      // alert(1)
     },
     // 清除
     reset() {
@@ -390,7 +378,7 @@ export default {
       // 触发模态框  questionapp
       this.$refs.questionapp.isShow = true;
       // 传当前的字段
-      this.$refs.questionapp.mode="add"
+      this.$refs.questionapp.mode = "add";
     },
 
     // 编辑
@@ -433,8 +421,8 @@ export default {
 
     // 页容量改变
     handleSizeChange(size) {
+      // 将服务器返回的数据 赋值给当前的分页
       this.pagination.pageSize = size;
-      // 搜索的结果必须是 第一页
       this.pagination.currentPage = 1;
       // 刷新数据
       this.getData();
@@ -472,7 +460,7 @@ export default {
   } */
   // 企业列表的内容
   .el-main {
-    height: 100%;
+    // height: 100%;
     color: #333;
     padding: 5px 12px !important;
   }

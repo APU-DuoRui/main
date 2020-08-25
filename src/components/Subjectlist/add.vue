@@ -7,8 +7,8 @@
       <el-form-item label="学科编码" prop="rid">
         <el-input v-model="form.rid"></el-input>
       </el-form-item>
-      <!-- 活动名称 -->
-      <el-form-item label="活动名称" prop="name">
+      <!-- 学科名称 -->
+      <el-form-item label="学科名称" prop="name">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
       <!-- 学科简称 -->
@@ -43,7 +43,7 @@ export default {
         this.form = {
           // 学科编码
           rid: "",
-          // 活动名称
+          // 学科名称
           name: "",
           // 学科简称
           short_name: "",
@@ -68,7 +68,7 @@ export default {
       form: {
         // 学科编码
         rid: "",
-        // 活动名称
+        // 学科名称
         name: "",
         // 学科简称
         short_name: "",
@@ -88,7 +88,7 @@ export default {
           },
           { min: 6, max: 8, message: "长度在 6 到 8 个字符", trigger: "blur" },
         ],
-        // 活动名称
+        // 学科名称
         name: [
           {
             required: true,

@@ -85,7 +85,8 @@
           <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :page-sizes="[1,10, 20, 30, 40]"
+            :current-page="pagination.currentPage"
+            :page-sizes="[1, 5, 10, 20, 30]"
             :page-size="pagination.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="pagination.total"
@@ -141,9 +142,9 @@ export default {
         // 当前的页码
         currentPage: 1,
         // 页的数量
-        pageSize: 10,
+        pageSize: 1,
         // 数据总条数
-        total: 1,
+        total: 100,
       },
     };
   },
@@ -165,7 +166,7 @@ export default {
         // 2.2将服务器返回的数据赋值给 数组(tableData)
         this.tableData = res.data.data.items;
         // 2.3将服务器返回的页码赋值给 页面
-        //this.pagination.total = res.data.pagination.total;
+        this.pagination.total = res.data.data.pagination.total;
         // console.log("企业列表", res);
       });
     },
@@ -185,11 +186,13 @@ export default {
     },
 
     // 5. 分页面插件
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    handleSizeChange(size) {
+      this.pagination.pageSize = size;
+      this.getData();
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    handleCurrentChange(page) {
+      this.pagination.currentPage = page;
+      this.inquire();
     },
     // 6. 添加列表(数据)
     add() {

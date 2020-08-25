@@ -116,7 +116,7 @@ export default {
       // 分页
       pagination: {
         currentPage: 1, //页码
-        pageSize: 5, //页容量(一页的总数)
+        pageSize: 1, //页容量(一页的总数)
         total: 100,
       },
     };

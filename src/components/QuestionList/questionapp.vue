@@ -55,18 +55,33 @@
       </el-form-item>
       <hr />
       <!-- 试题标题 -->
-      <el-form-item label="试题标题" class="setTop">
+      <el-form-item label="试题标题" class="setTop" prop="title">
         <!-- 富文本有二个东西
           v-model="双向绑定"
           @change="当输入内容改变时执行"
         -->
-        <quillEditor v-model="form.title" @change="editorChange"></quillEditor>
+        <quillEditor v-model="form.title" @radio="editorChange('title')"></quillEditor>
       </el-form-item>
       <!-- 单选 -->
       <el-form-item :label="typeObj[form.type]" :prop="typeAnObj[form.type]">
         <!-- 子组件触发父组件  @子组件方法名 ="父组件方法" -->
         <!-- 触发 （子组件触发） this.$emit("子组件方法名",参数) -->
-        <!-- <allSelect :form="form" @validateOther="validateOther"></allSelect> -->
+        <!--  radio 解析选向组件(第一步) -->
+        <radio :form="form" @radio="editorChange"></radio>
+      </el-form-item>
+      <!-- 解析视频 -->
+      <el-form-item label="解析视频" prop="video">
+        <!-- 解析视频组件(第三步) -->
+        <uploading v-model="form.video" type="video"></uploading>
+      </el-form-item>
+      <hr />
+      <!-- 答案解析 -->
+      <el-form-item label="答案解析" prop="answer_analyze">
+        <quillEditor v-model="form.answer_analyze" @change="editorChange('answer_analyze')"></quillEditor>
+      </el-form-item>
+      <!-- 试题备注 -->
+      <el-form-item label="试题备注" prop="remark">
+        <el-input type="textarea" v-model="form.remark" :rows="4"></el-input>
       </el-form-item>
     </el-form>
     <!-- 按钮 -->
@@ -92,10 +107,18 @@ import { regionData } from "element-china-area-data";
 
 // 导入 接口  新增接口 / 编辑接口
 import { editTopic } from "@/port/QuestionAPP/app.js";
+// 导入嵌套子组件 解析选向组件(第一步)
+import radio from "@/components/QuestionList/encapsulation/radio.vue";
+// 导入嵌套子组件 解析视频组件(第一步)
+import uploading from "@/components/QuestionList/encapsulation/uploading.vue";
 export default {
   components: {
     // 定义富文本
     quillEditor,
+    // 将(radio组件)挂载到vue中 解析选向组件(第二步)
+    radio,
+    // 将(uploading)挂载到vue中 解析视频组件(第二步)
+    uploading,
   },
   // 通过 props  接收 参数父组件
   props: [
@@ -115,38 +138,90 @@ export default {
         this.form = {
           //  3.2表单
           form: {
-            // 学科
-            subject: "",
-            // 阶段
-            step: "",
-            // 企业
-            enterprise: "",
-            // 题型
-            type: "",
-            // 难度
-            difficulty: "",
-            // 作者
-            username: "",
-            // 状态
-            status: "",
-            // 日期
-            create_date: "",
-            // 标题
-            title: "",
-            // 单选题答案	是	string
-            single_select_answer: "",
-            // 多选题答案	是	array
-            multiple_select_answer: "",
-            // 简答题答案	是	string
-            short_answer: "",
-            // 解析视频地址	是	string
-            video: "",
-            // 答案解析	是	string
-            answer_analyze: "",
-            // 答案备注	是	string
-            remark: "",
-            // 选项，介绍，图片介绍	是	array
-            select_options: "",
+            form: {
+              // 学科
+              subject: "",
+              // 阶段
+              step: "",
+              // 企业
+              enterprise: "",
+              // 城市
+              city: [],
+              // 标题
+              title: "",
+              // 题型
+              type: "",
+              // 难度
+              difficulty: "",
+              // 单选题答案
+              single_select_answer: "",
+              // 多选题答案
+              multiple_select_answer: [""],
+              // 简答题答案
+              short_answer: "",
+              // 解析视频地址
+              video: "",
+              // 答案解析
+              answer_analyze: "",
+              // 答案备注
+              remark: "",
+              // /图片介绍
+              select_options: [
+                {
+                  label: "A",
+                  text: "",
+                  image: "",
+                },
+                {
+                  label: "B",
+                  text: "",
+                  image: "",
+                },
+                {
+                  label: "C",
+                  text: "",
+                  image: "",
+                },
+                {
+                  label: "D",
+                  text: "",
+                  image: "",
+                },
+              ],
+            },
+            rules: {
+              subject: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //nt	学科id标识
+              step: [{ required: true, message: "必填哦", trigger: "change" }], //nt	阶段1、初级 2、中级 3、高级
+              enterprise: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //nt	企业id标识
+              city: [{ required: true, message: "必填哦", trigger: "change" }], //rray	[省、市、区县]
+              title: [{ required: true, message: "必填哦", trigger: "change" }], //tring	标题
+              type: [{ required: true, message: "必填哦", trigger: "change" }], //int	题型 1单选 、2多选 、3简答
+              difficulty: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //int	题目难度 1简单 、2一般 、3困难
+              single_select_answer: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //	string	单选题答案
+              multiple_select_answer: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //	是	array	多选题答案
+              short_answer: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //tring	简答题答案
+              answer_analyze: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //tring	答案解析
+              remark: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //tring	答案备注
+              select_options: [
+                { required: true, message: "必填哦", trigger: "change" },
+              ], //
+            },
           },
         };
 
@@ -165,6 +240,7 @@ export default {
       //  级联模块
       options: regionData,
       //  3.2表单
+      // 直接把(父组件)form表单传过给子组件
       form: {
         // 学科
         subject: "",
@@ -174,18 +250,72 @@ export default {
         enterprise: "",
         // 城市
         city: [],
-        // 题型
-        type: "",
-        // 难度
-        difficulty: "",
-        // 作者
-        username: "",
-        // 状态
-        status: "",
-        // 日期
-        create_date: "",
         // 标题
         title: "",
+        // 题型
+        type: 1,
+        // 难度
+        difficulty: 1,
+        // 单选题答案
+        single_select_answer: "",
+        // 多选题答案
+        multiple_select_answer: ["B"],
+        // 简答题答案
+        short_answer: "",
+        // 解析视频地址
+        video: "",
+        // 答案解析
+        answer_analyze: "",
+        // 答案备注
+        remark: "",
+        // /图片介绍
+        select_options: [
+          {
+            label: "A",
+            text: "",
+            image: "",
+          },
+          {
+            label: "B",
+            text: "",
+            image: "",
+          },
+          {
+            label: "C",
+            text: "",
+            image: "",
+          },
+          {
+            label: "D",
+            text: "",
+            image: "",
+          },
+        ],
+      },
+      rules: {
+        subject: [{ required: true, message: "必填哦", trigger: "change" }], //nt	学科id标识
+        step: [{ required: true, message: "必填哦", trigger: "change" }], //nt	阶段1、初级 2、中级 3、高级
+        enterprise: [{ required: true, message: "必填哦", trigger: "change" }], //nt	企业id标识
+        city: [{ required: true, message: "必填哦", trigger: "change" }], //rray	[省、市、区县]
+        title: [{ required: true, message: "必填哦", trigger: "change" }], //tring	标题
+        type: [{ required: true, message: "必填哦", trigger: "change" }], //int	题型 1单选 、2多选 、3简答
+        difficulty: [{ required: true, message: "必填哦", trigger: "change" }], //int	题目难度 1简单 、2一般 、3困难
+        single_select_answer: [
+          { required: true, message: "必填哦", trigger: "change" },
+        ], //	string	单选题答案
+        multiple_select_answer: [
+          { required: true, message: "必填哦", trigger: "change" },
+        ], //	是	array	多选题答案
+        short_answer: [
+          { required: true, message: "必填哦", trigger: "change" },
+        ], //tring	简答题答案
+        answer_analyze: [
+          { required: true, message: "必填哦", trigger: "change" },
+        ], //tring	答案解析
+        remark: [{ required: true, message: "必填哦", trigger: "change" }], //tring	答案备注
+        select_options: [
+          { required: true, message: "必填哦", trigger: "change" },
+        ], //
       },
       // 绑定通过子(组件)  mode
       mode: "add",
@@ -230,7 +360,14 @@ export default {
       });
     },
     editorChange(msg) {
-      console.log(msg);
+      this.$refs.form.validateField([msg]);
+    },
+    // 部分验证
+    /* radio(msg) {
+      this.$refs.form.validateField([msg]);
+    }, */
+    created() {
+      this.initForm = JSON.parse(JSON.stringify(this.form));
     },
   },
 };
@@ -256,7 +393,7 @@ export default {
   margin: 0 auto;
 }
 .setTop .el-form-item__content {
-  margin-left: 0 !important;
+  margin-left: 30px !important;
   margin-top: 60px;
 }
 .el-select {

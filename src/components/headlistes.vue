@@ -9,6 +9,7 @@
         <!-- 右边头部 -->
         <div class="box2">
           <div v-if="$store.state.userInfo != ''">
+            <!-- 防止异步操作  等img的数据返回 一起操作   所以路径不能等于空 -->
             <img :src="baseUrl + '/' + $store.state.userInfo.avatar" alt />
           </div>
           <p>{{$store.state.userInfo.username}},您好!!</p>
@@ -16,12 +17,13 @@
         </div>
       </div>
     </el-header>
-      <!-- 侧边列表 -->
+    <!-- 侧边列表 -->
     <el-container class="content">
+      <!-- default-active : 默认选中某一个 -->
+      <!-- disabled 禁止(点击) -->
       <el-aside width="auto">
         <el-row>
           <el-col :span="24">
-            <!-- default-active : 默认选中某一个 -->
             <el-menu
               :default-active="$route.path"
               :router="true"
@@ -30,6 +32,60 @@
               text-color="#000"
               active-text-color="#008aff"
             >
+              <!-- 判断当前的账号是否是没有权限 如果没有则不显示菜单栏 -->
+              <!-- 所以使用vi-if  与 v-for 不能一起 使用 -->
+              <!-- 创建一个占位符  template -->
+              <!-- 遍历 路由 -->
+              <!--  <template v-for="(item, index) in $router.options.routes[2].children">
+                判断当前是否是有权限
+                <el-menu-item
+                  :key="index"
+                  :index="item.path"
+                  v-if="item.meta.roles.includes($store.state.role)"
+                >
+                  字体图标
+                  <i :class="item.meta.icon"></i>
+                  当前的头部标题 的字体
+                  <span slot="title">{{item.meta.title}}</span>
+                </el-menu-item>
+              </template>-->
+               <!-- 代码冗余 有权限管理 -->
+              <el-menu-item
+                v-if="['超级管理员', '管理员', '老师'].includes($store.state.role)"
+                index="/components/headlistes/Datalist"
+              >
+                <i class="el-icon-pie-chart"></i>
+                <span slot="title">数据概览</span>
+              </el-menu-item>
+              <el-menu-item
+                v-if="['超级管理员', '管理员',].includes($store.state.role)"
+                index="/components/headlistes/UsersList"
+              >
+                <i class="el-icon-user"></i>
+                <span slot="title">用户列表</span>
+              </el-menu-item>
+              <el-menu-item
+                v-if="['超级管理员', '管理员', '老师'].includes($store.state.role)"
+                index="/components/headlistes/QuestionList"
+              >
+                <i class="el-icon-collection"></i>
+                <span slot="title">题库列表</span>
+              </el-menu-item>
+              <el-menu-item
+                v-if="['超级管理员'].includes($store.state.role)"
+                index="/components/headlistes/CompaniesList"
+              >
+                <i class="el-icon-office-building"></i>
+                <span slot="title">企业列表</span>
+              </el-menu-item>
+              <el-menu-item
+                v-if="['超级管理员', '管理员', '老师','学生'].includes($store.state.role)"
+                index="/components/headlistes/SubjectList"
+              >
+                <i class="el-icon-notebook-1"></i>
+                <span slot="title">学科列表</span>
+              </el-menu-item>
+              <!-- // 简单 但是没有权限管理
               <el-menu-item index="/components/headlistes/Datalist">
                 <i class="el-icon-pie-chart"></i>
                 <span slot="title">数据概览</span>
@@ -38,7 +94,6 @@
                 <i class="el-icon-user"></i>
                 <span slot="title">用户列表</span>
               </el-menu-item>
-              <!-- disabled 禁止(点击) -->
               <el-menu-item index="/components/headlistes/QuestionList">
                 <i class="el-icon-collection"></i>
                 <span slot="title">题库列表</span>
@@ -50,7 +105,7 @@
               <el-menu-item index="/components/headlistes/SubjectList">
                 <i class="el-icon-notebook-1"></i>
                 <span slot="title">学科列表</span>
-              </el-menu-item>
+              </el-menu-item>-->
             </el-menu>
           </el-col>
         </el-row>
@@ -78,14 +133,38 @@ export default {
       this.$router.push("/login");
       return;
     }
-
+    // console.log("router:", this.$route.path);
+    console.log("router:", this.$router);
     // 2.用户进页面 默认 发送axios请求
+    // 获取用户信息
     getInfo().then((res) => {
       // 调用vuex  封装好的数据
       this.$store.state.userInfo = res.data.data;
-      // this.$store.state.userInfo = res.data.data;
+      // window.console.log("用户信息:", res);
       // console.log("111", res);
+      // 判断当前是不是没有权限 如果没有权限则返回到登录页面
+      if (res.data.data.status == 0) {
+        // 提示用户
+        this.$message.warning("请你联系管理员");
+        // 删除token
+        getremove("token");
+        // 跳转登录页面
+        this.$router.push("/login");
+      } else {
+        // 获取角色
+        this.$store.state.role = res.data.data.role;
+        console.log("获取角色", this.$store.state.role);
+        if (!this.$route.meta.roles.includes(res.data.data.role)) {
+          // 提示用户
+          this.$message.error("你没有权限访问该页面");
+          // 删除token
+          getremove("token");
+          // 跳转登录页面
+          this.$router.push("/login");
+        }
+      }
     });
+    console.log(this.$router.options.routes[2].children);
   },
   // (2)定义方法
   data() {
